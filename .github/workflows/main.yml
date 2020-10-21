@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     # checkout the repo
     - name: Check out repository
@@ -15,7 +15,7 @@ jobs:
         environment: AzureStack
     - uses: azure/appservice-settings@v1
       with:
-        app-name: 'my-app'
+        app-name: 'githubactionstestapp'
         slot-name: 'staging'  # Optional and needed only if the settings have to be configured on the specific deployment slot
         app-settings-json: '${{ secrets.APP_SETTINGS }}' 
         connection-strings-json: '${{ secrets.CONNECTION_STRINGS }}'
