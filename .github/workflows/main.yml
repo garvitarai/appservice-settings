@@ -1,0 +1,26 @@
+# .github/workflows/configureAppSettings.yml
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    # checkout the repo
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Use Private Azure Login Action
+      uses: Azure/login@AzureStackSupport-Beta
+      with:
+        creds: ${{ secrets.AZURESTACK_PPE2_CREDENTIALS }}
+        environment: AzureStack
+    - uses: azure/appservice-settings@v1
+      with:
+        app-name: 'my-app'
+        slot-name: 'staging'  # Optional and needed only if the settings have to be configured on the specific deployment slot
+        app-settings-json: '${{ secrets.APP_SETTINGS }}' 
+        connection-strings-json: '${{ secrets.CONNECTION_STRINGS }}'
+        general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}' #'General configuration settings as Key Value pairs'
+      id: settings
+    - run: echo "The webapp-url is ${{ steps.settings.outputs.webapp-url }}"
+    - run: |
+        az logout
